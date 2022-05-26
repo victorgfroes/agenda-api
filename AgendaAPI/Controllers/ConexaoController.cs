@@ -17,9 +17,9 @@ namespace AgendaAPI.Controllers
         }
 
         [HttpPost("SolicitaConexao/{idGoogleSolicitante}/{email}")]
-        public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idSGoogleSolicitante, string email)
+        public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string email)
         {
-            var conexao = await _queries.RequestConexao(conexaoDTO, idSGoogleSolicitante, email);
+            var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, email);
 
             if (conexao != null)
             {
@@ -62,6 +62,30 @@ namespace AgendaAPI.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        [HttpGet("RecuperaConexoesPorIdGoogle/{idGoogle}")]
+        public async Task<ActionResult> RecuperaConexoesPorIdGoogle(int idGoogle)
+        {
+            var conexao = await _queries.GetConexoesByIdGoogle(idGoogle);
+
+            if (conexao != null)
+            {
+                return Ok(conexao);
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("DeletaConexao/{idConexao}/{idGoogleSolicitante}/{idGoogleSolicitado}")]
+        public async Task<ActionResult> DeletaConexao(int idConexao, int idGoogleSolicitante, int idGoogleSolicitado)
+        {
+            var conexao = await _queries.DeleteConexao(idConexao, idGoogleSolicitante, idGoogleSolicitado);
+
+            if (conexao.Equals(0))
+            {
+                return NotFound();
+            }
+            return Ok();
         }
     }
 }

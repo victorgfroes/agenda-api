@@ -32,15 +32,15 @@ namespace AgendaAPI.Controllers
 
             if (agenda != null)
             {
-                return Ok(JsonSerializer.Serialize(new { /*agendaid = agenda.Id_Agenda,*/ mensagem = $"Agenda {agenda.Id_Agenda} inserida com sucesso." }, _options));
+                return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda {agenda.Id_Agenda} inserida com sucesso." }, _options));
             }
             return NotFound();
         }
 
-        [HttpGet("RecuperaAgendasPorIdUsuario/{idUsuario}")]
-        public async Task<ActionResult> RecuperaAgendasPorIdUsuario(int idGoogle)
+        [HttpGet("RecuperaAgendasPorIdGoogle/{idGoogle}")]
+        public async Task<ActionResult> RecuperaAgendasPorIdGoogle(int idGoogle)
         {
-            var agenda = await _queries.GetAgendasByIdUsuario(idGoogle);
+            var agenda = await _queries.GetAgendasByIdGoogle(idGoogle);
 
             if (agenda != null)
             {
