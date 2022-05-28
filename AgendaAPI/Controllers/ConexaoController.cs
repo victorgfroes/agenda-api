@@ -19,11 +19,14 @@ namespace AgendaAPI.Controllers
         [HttpPost("SolicitaConexao/{idGoogleSolicitante}/{email}")]
         public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string email)
         {
-            var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, email);
-
-            if (conexao != null)
+            if(!_queries.GetOpenConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK))
             {
-                return Ok(conexao);
+                var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, email);
+
+                if (conexao != null)
+                {
+                    return Ok(conexao);
+                }
             }
             return NotFound();
         }

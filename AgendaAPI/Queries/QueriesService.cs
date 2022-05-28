@@ -171,6 +171,17 @@ namespace AgendaAPI.Queries
                 return await con.ExecuteAsync(_query, new { ID_CONEXAO = idConexao, ID_GOOGLE_SOLICITANTE = idGoogleSolicitante, ID_GOOGLE_SOLICITADO = idGoogleSolicitado });
             }
         }
+
+        public bool GetOpenConexao(int idGoogleSolicitante, int idGoogleSolicitado)
+        {
+            string _query = @"SELECT ID_CONEXAO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO IS NULL";
+
+            using (var con = new MySqlConnection(_connectionString))
+            {
+                con.Open();
+                return con.ExecuteScalar<bool>(_query, new { ID_GOOGLE_SOLICITANTE = idGoogleSolicitante, ID_GOOGLE_SOLICITADO = idGoogleSolicitado });
+            }
+        }
         #endregion
 
         #region Queries Usuários
