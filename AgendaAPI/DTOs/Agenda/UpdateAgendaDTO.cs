@@ -6,7 +6,7 @@ namespace AgendaAPI.DTOs.Agenda
     public class UpdateAgendaDTO
     {
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string Titulo { get; set; }
         [Required]
         [StringLength(150)]

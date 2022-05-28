@@ -13,10 +13,10 @@ namespace AgendaAPI.Models
         [StringLength(100)]
         public string Email { get; set; }
         [Required]
-        [StringLength(100)]
+        [StringLength(21844)]
         public string Nome { get; set; }
         [Required]
-        [StringLength(200)]
+        [StringLength(21844)]
         public string Foto { get; set; }
     }
 }

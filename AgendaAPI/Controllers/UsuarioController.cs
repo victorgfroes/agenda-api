@@ -18,7 +18,7 @@ namespace AgendaAPI.Controllers
         [HttpPost("AdicionaUsuario/{idGoogle}/{email}/{nome}/{foto}")]
         public async Task<ActionResult> AdicionaUsuario(int idGoogle, string email, string nome, string foto)
         {
-            var usuario = await _queries.InsertUsuario(idGoogle, email, nome, foto);
+            var usuario = await _queries.InsertUsuario(idGoogle, email, nome, foto.Replace("%2F", "/"));
 
             if(usuario != null)
             {

@@ -16,10 +16,10 @@ namespace AgendaAPI.Models
         [StringLength(100)]
         public string Email_FK { get; set; }
         [Required]
-        [StringLength(100)]
+        [StringLength(21844)]
         public string Nome_FK { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string Titulo { get; set; }
         [Required]
         [StringLength(150)]

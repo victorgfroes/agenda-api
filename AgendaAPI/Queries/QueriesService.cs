@@ -200,12 +200,12 @@ namespace AgendaAPI.Queries
         
         public async Task<IEnumerable<Usuario>> GetUsuario(string email)
         {
-            string _query = @"SELECT ID_GOOGLE, EMAIL, NOME FROM USUARIOS WHERE NOME LIKE @NOME;";
+            string _query = @"SELECT ID_GOOGLE, EMAIL, NOME, FOTO FROM USUARIOS WHERE EMAIL LIKE @EMAIL;";
 
             using (var con = new MySqlConnection(_connectionString))
             {
                 con.Open();
-                return await con.QueryAsync<Usuario>(_query, new { NOME = $"%{email}%" });
+                return await con.QueryAsync<Usuario>(_query, new { EMAIL = $"%{email}%" });
             }
         }
         #endregion
