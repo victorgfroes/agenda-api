@@ -5,6 +5,7 @@ using Dapper;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AgendaAPI.Queries
@@ -117,7 +118,7 @@ namespace AgendaAPI.Queries
             }
         }
 
-        public async Task<IEnumerable<Conexao>> GetSolicitacoesConexoesByIdGoogle(int idGoogleSolicitado)
+        public async Task<IEnumerable<Conexao>> GetSolicitacoesConexoesEmAbertoByIdGoogle(int idGoogleSolicitado)
         {
             string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO IS NULL;";
 
@@ -150,14 +151,14 @@ namespace AgendaAPI.Queries
             }
         }
 
-        public async Task<IEnumerable<Conexao>> GetConexoesByIdGoogle(int idGoogle)
+        public async Task<IEnumerable<Conexao>> GetConexoesByIdGoogle(int idGoogleSolicitante)
         {
             string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ACEITO = TRUE;";
 
             using (var con = new MySqlConnection(_connectionString))
             {
                 con.Open();
-                return await con.QueryAsync<Conexao>(_query, new { ID_GOOGLE_SOLICITANTE = idGoogle });
+                return await con.QueryAsync<Conexao>(_query, new { ID_GOOGLE_SOLICITANTE = idGoogleSolicitante });
             }
         }
 
@@ -207,6 +208,47 @@ namespace AgendaAPI.Queries
                 con.Open();
                 return await con.QueryAsync<Usuario>(_query, new { EMAIL = $"%{email}%" });
             }
+        }
+
+        public bool GetUsuarioJaCadastrado(int idGoogle, string email)
+        {
+            string _query = "SELECT ID_GOOGLE, EMAIL, NOME, FOTO FROM USUARIOS WHERE ID_GOOGLE = @ID_GOOGLE AND EMAIL = @EMAIL;";
+
+            using (var con = new MySqlConnection(_connectionString))
+            {
+                con.Open();
+                return con.ExecuteScalar<bool>(_query, new { ID_GOOGLE = idGoogle, EMAIL = email });
+            }
+        }
+        #endregion
+
+        #region Utils
+        public string PercentDecode(string texto)
+        {
+            StringBuilder sb = new StringBuilder(texto);
+
+            sb.Replace("%20", " ");
+            sb.Replace("%21", "!");
+            sb.Replace("%23", "#");
+            sb.Replace("%24", "$");
+            sb.Replace("%25", "%");
+            sb.Replace("%26", "&");
+            sb.Replace("%27", "'");
+            sb.Replace("%28", "(");
+            sb.Replace("%29", ")");
+            sb.Replace("%2A", "*");
+            sb.Replace("%2B", "+");
+            sb.Replace("%2C", ",");
+            sb.Replace("%2F", "/");
+            sb.Replace("%3A", ":");
+            sb.Replace("%3B", ";");
+            sb.Replace("%3D", "=");
+            sb.Replace("%3F", "?");
+            sb.Replace("%40", "@");
+            sb.Replace("%5B", "[");
+            sb.Replace("%5D", "]");
+
+            return sb.ToString();
         }
         #endregion
     }

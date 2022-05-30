@@ -1,6 +1,8 @@
 ﻿using AgendaAPI.DTOs.Conexao;
 using AgendaAPI.Queries;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AgendaAPI.Controllers
@@ -10,10 +12,17 @@ namespace AgendaAPI.Controllers
     public class ConexaoController : ControllerBase
     {
         private readonly IQueriesService _queries;
+        private readonly JsonSerializerOptions _options;
 
         public ConexaoController(IQueriesService queries)
         {
             _queries = queries;
+            _options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
         }
 
         [HttpPost("SolicitaConexao/{idGoogleSolicitante}/{nomeSolicitante}/{email}")]
@@ -27,14 +36,15 @@ namespace AgendaAPI.Controllers
                 {
                     return Ok(conexao);
                 }
+                return NotFound();
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Solicitação de conexão já foi enviada para esse usuário!" }, _options));
         }
 
-        [HttpGet("RecuperaSolicitacoesConexoesPorIdGoogle/{idGoogleSolicitado}")]
-        public async Task<ActionResult> RecuperaSolicitacoesConexoesPorIdGoogle(int idGoogleSolicitado)
+        [HttpGet("RecuperaSolicitacoesConexoesEmAbertoPorIdGoogle/{idGoogleSolicitado}")]
+        public async Task<ActionResult> RecuperaSolicitacoesConexoesEmAbertoPorIdGoogle(int idGoogleSolicitado)
         {
-            var conexao = await _queries.GetSolicitacoesConexoesByIdGoogle(idGoogleSolicitado);
+            var conexao = await _queries.GetSolicitacoesConexoesEmAbertoByIdGoogle(idGoogleSolicitado);
 
             if (conexao != null)
             {
@@ -67,10 +77,10 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("RecuperaConexoesPorIdGoogle/{idGoogle}")]
-        public async Task<ActionResult> RecuperaConexoesPorIdGoogle(int idGoogle)
+        [HttpGet("RecuperaConexoesPorIdGoogle/{idGoogleSolicitante}")]
+        public async Task<ActionResult> RecuperaConexoesPorIdGoogle(int idGoogleSolicitante)
         {
-            var conexao = await _queries.GetConexoesByIdGoogle(idGoogle);
+            var conexao = await _queries.GetConexoesByIdGoogle(idGoogleSolicitante);
 
             if (conexao != null)
             {

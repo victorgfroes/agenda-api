@@ -1,8 +1,6 @@
 ﻿using AgendaAPI.DTOs.Agenda;
 using AgendaAPI.Queries;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AgendaAPI.Controllers
@@ -12,17 +10,10 @@ namespace AgendaAPI.Controllers
     public class AgendaController : ControllerBase
     {
         private readonly IQueriesService _queries;
-        private readonly JsonSerializerOptions _options;
 
         public AgendaController(IQueriesService queries)
         {
-            _queries = queries;
-            _options = new JsonSerializerOptions
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = true,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-            };
+            _queries = queries;            
         }
 
         [HttpPost("AdicionaAgenda/{idUsuario}/{idGoogle}/{email}/{nome}")]
@@ -32,7 +23,7 @@ namespace AgendaAPI.Controllers
 
             if (agenda != null)
             {
-                return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda {agenda.Id_Agenda} inserida com sucesso." }, _options));
+                return Ok(agenda);
             }
             return NotFound();
         }
@@ -44,7 +35,7 @@ namespace AgendaAPI.Controllers
 
             if (agenda != null)
             {
-                return Ok(JsonSerializer.Serialize(agenda, _options));
+                return Ok(agenda);
             }
             return NotFound();
         }
@@ -106,7 +97,7 @@ namespace AgendaAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(JsonSerializer.Serialize(new { mensagem = "Agenda Removida" }, _options));
+            return Ok();
         }
     }
 }

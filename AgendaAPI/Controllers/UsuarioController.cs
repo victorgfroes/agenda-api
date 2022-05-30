@@ -1,5 +1,7 @@
 ﻿using AgendaAPI.Queries;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AgendaAPI.Controllers
@@ -9,22 +11,35 @@ namespace AgendaAPI.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IQueriesService _queries;
+        private readonly JsonSerializerOptions _options;
 
         public UsuarioController(IQueriesService queries)
         {
             _queries = queries;
+            _options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
         }
 
         [HttpPost("AdicionaUsuario/{idGoogle}/{email}/{nome}/{foto}")]
         public async Task<ActionResult> AdicionaUsuario(int idGoogle, string email, string nome, string foto)
         {
-            var usuario = await _queries.InsertUsuario(idGoogle, email, nome, foto.Replace("%2F", "/"));
+            foto = _queries.PercentDecode(foto);
 
-            if(usuario != null)
+            if (!_queries.GetUsuarioJaCadastrado(idGoogle, email))
             {
-                return Ok(usuario);
+                var usuario = await _queries.InsertUsuario(idGoogle, email, nome, foto);
+
+                if (usuario != null)
+                {
+                    return Ok(usuario);
+                }
+                return NotFound();
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Usuario já existente!" }, _options));
         }
         
         [HttpGet("ProcuraUsuario/{email}")]
@@ -37,6 +52,6 @@ namespace AgendaAPI.Controllers
                 return Ok(usuario);
             }
             return NotFound();
-        }
+        }        
     }
 }
