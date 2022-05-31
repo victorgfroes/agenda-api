@@ -1,6 +1,9 @@
 ﻿using AgendaAPI.DTOs.Agenda;
 using AgendaAPI.Queries;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AgendaAPI.Controllers
@@ -10,10 +13,17 @@ namespace AgendaAPI.Controllers
     public class AgendaController : ControllerBase
     {
         private readonly IQueriesService _queries;
+        private readonly JsonSerializerOptions _options;
 
         public AgendaController(IQueriesService queries)
         {
-            _queries = queries;            
+            _queries = queries;
+            _options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
         }
 
         [HttpPost("AdicionaAgenda/{idUsuario}/{idGoogle}/{email}/{nome}")]
@@ -25,7 +35,7 @@ namespace AgendaAPI.Controllers
             {
                 return Ok(agenda);
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao inserir agenda!" }, _options));
         }
 
         [HttpGet("RecuperaAgendasPorIdGoogle/{idGoogle}")]
@@ -33,11 +43,11 @@ namespace AgendaAPI.Controllers
         {
             var agenda = await _queries.GetAgendasByIdGoogle(idGoogle);
 
-            if (agenda != null)
+            if (agenda.ToList().Count > 0)
             {
                 return Ok(agenda);
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Não existem agendas cadastradas!" }, _options));
         }
 
         [HttpPut("AtualizaAgendaPorIdAgenda/{idAgenda}")]
@@ -47,9 +57,9 @@ namespace AgendaAPI.Controllers
 
             if (agenda.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao atualizar agenda!" }, _options));
             }
-            return NoContent();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda atualizada com sucesso!" }, _options));
         }
 
         [HttpPut("AtualizaTituloPorIdAgenda/{idAgenda}")]
@@ -59,9 +69,9 @@ namespace AgendaAPI.Controllers
 
             if (agenda.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao atualizar agenda!" }, _options));
             }
-            return NoContent();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda atualizada com sucesso!" }, _options));
         }
 
         [HttpPut("AtualizaDescricaoPorIdAgenda/{idAgenda}")]
@@ -71,9 +81,9 @@ namespace AgendaAPI.Controllers
 
             if (agenda.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao atualizar agenda!" }, _options));
             }
-            return NoContent();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda atualizada com sucesso!" }, _options));
         }
 
         [HttpPut("AtualizaDtFimPorIdAgenda/{idAgenda}")]
@@ -83,9 +93,9 @@ namespace AgendaAPI.Controllers
 
             if (agenda.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao atualizar agenda!" }, _options));
             }
-            return NoContent();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda atualizada com sucesso!" }, _options));
         }
 
         [HttpDelete("DeletaAgendaPorIdAgenda/{idAgenda}")]
@@ -95,9 +105,9 @@ namespace AgendaAPI.Controllers
 
             if (agenda.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao deletar agenda!" }, _options));
             }
-            return Ok();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Agenda deletada com sucesso!" }, _options));
         }
     }
 }

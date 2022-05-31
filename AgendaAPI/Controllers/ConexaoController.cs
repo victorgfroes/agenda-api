@@ -1,6 +1,7 @@
 ﻿using AgendaAPI.DTOs.Conexao;
 using AgendaAPI.Queries;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -26,9 +27,9 @@ namespace AgendaAPI.Controllers
         }
 
         [HttpPost("SolicitaConexao/{idGoogleSolicitante}/{nomeSolicitante}/{email}")]
-        public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idGoogleSolicitante,  string nomeSolicitante, string email)
+        public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email)
         {
-            if(!_queries.GetOpenAndAcceptedConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK))
+            if (!_queries.GetOpenAndAcceptedConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK))
             {
                 var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, nomeSolicitante, email);
 
@@ -36,7 +37,7 @@ namespace AgendaAPI.Controllers
                 {
                     return Ok(conexao);
                 }
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao solicitar conexão!" }, _options));
             }
             return NotFound(JsonSerializer.Serialize(new { mensagem = $"Solicitação de conexão já foi enviada para esse usuário!" }, _options));
         }
@@ -46,11 +47,11 @@ namespace AgendaAPI.Controllers
         {
             var conexao = await _queries.GetSolicitacoesConexoesEmAbertoByIdGoogle(idGoogleSolicitado);
 
-            if (conexao != null)
+            if (conexao.ToList().Count > 0)
             {
                 return Ok(conexao);
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Não existem solicitações de conexão em aberto para esse usuário!" }, _options));
         }
 
         [HttpPut("AceitarConexao/{idConexao}/{idGoogleSolicitante}/{idGoogleSolicitado}")]
@@ -60,9 +61,9 @@ namespace AgendaAPI.Controllers
 
             if (conexao.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao aceitar conexão!" }, _options));
             }
-            return NoContent();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Solicitação de conexão foi aceita!" }, _options));
         }
 
         [HttpPut("RecusarConexao/{idConexao}/{idGoogleSolicitante}/{idGoogleSolicitado}")]
@@ -72,9 +73,9 @@ namespace AgendaAPI.Controllers
 
             if (conexao.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao recusar conexão!" }, _options));
             }
-            return NoContent();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Solicitação de conexão foi recusada!" }, _options));
         }
 
         [HttpGet("RecuperaConexoesPorIdGoogle/{idGoogleSolicitante}")]
@@ -82,11 +83,11 @@ namespace AgendaAPI.Controllers
         {
             var conexao = await _queries.GetConexoesByIdGoogle(idGoogleSolicitante);
 
-            if (conexao != null)
+            if (conexao.ToList().Count > 0)
             {
                 return Ok(conexao);
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Não existem conexões com outros usuários!" }, _options));
         }
 
         [HttpDelete("DeletaConexao/{idConexao}/{idGoogleSolicitante}/{idGoogleSolicitado}")]
@@ -96,9 +97,9 @@ namespace AgendaAPI.Controllers
 
             if (conexao.Equals(0))
             {
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao excluir conexão!" }, _options));
             }
-            return Ok();
+            return Ok(JsonSerializer.Serialize(new { mensagem = $"Conexão excluída!" }, _options));
         }
     }
 }

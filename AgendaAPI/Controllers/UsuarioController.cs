@@ -1,5 +1,6 @@
 ﻿using AgendaAPI.Queries;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace AgendaAPI.Controllers
                 {
                     return Ok(usuario);
                 }
-                return NotFound();
+                return NotFound(JsonSerializer.Serialize(new { mensagem = $"Erro ao cadastrar usuario!" }, _options));
             }
             return NotFound(JsonSerializer.Serialize(new { mensagem = $"Usuario já existente!" }, _options));
         }
@@ -47,11 +48,11 @@ namespace AgendaAPI.Controllers
         {
             var usuario = await _queries.GetUsuario(email);
 
-            if (usuario != null)
+            if (usuario.ToList().Count > 0)
             {
                 return Ok(usuario);
             }
-            return NotFound();
+            return NotFound(JsonSerializer.Serialize(new { mensagem = $"Usuario não existente!" }, _options));
         }        
     }
 }
