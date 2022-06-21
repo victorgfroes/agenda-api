@@ -19,6 +19,9 @@ namespace AgendaAPI.Models
         [StringLength(500)]
         public string Nome_FK { get; set; }
         [Required]
+        [StringLength(500)]
+        public string Foto_FK { get; set; }
+        [Required]
         [StringLength(100)]
         public string Titulo { get; set; }
         [Required]

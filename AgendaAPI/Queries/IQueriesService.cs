@@ -9,7 +9,7 @@ namespace AgendaAPI.Queries
     public interface IQueriesService
     {
         #region Queries Agendas
-        Task<Agenda> InsertAgenda(CreateAgendaDTO agendaDTO, int idUsuario, int idGoogle, string email, string nome);
+        Task<Agenda> InsertAgenda(CreateAgendaDTO agendaDTO, int idUsuario, int idGoogle, string email, string nome, string foto);
         Task<IEnumerable<Agenda>> GetAgendasByIdGoogle(int idGoogle);
         Task<int> UpdateAgendaByIdAgenda(UpdateAgendaDTO agendaDTO, int idAgenda);
         Task<int> UpdateTituloByIdAgenda(UpdateTituloAgendaDTO tituloAgendaDTO, int idAgenda);

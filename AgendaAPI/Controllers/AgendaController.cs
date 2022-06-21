@@ -26,10 +26,10 @@ namespace AgendaAPI.Controllers
             };
         }
 
-        [HttpPost("AdicionaAgenda/{idUsuario}/{idGoogle}/{email}/{nome}")]
-        public async Task<ActionResult> AdicionaAgenda([FromBody] CreateAgendaDTO agendaDTO, int idUsuario, int idGoogle, string email, string nome)
+        [HttpPost("AdicionaAgenda/{idUsuario}/{idGoogle}/{email}/{nome}/{foto}")]
+        public async Task<ActionResult> AdicionaAgenda([FromBody] CreateAgendaDTO agendaDTO, int idUsuario, int idGoogle, string email, string nome, string foto)
         {
-            var agenda = await _queries.InsertAgenda(agendaDTO, idUsuario, idGoogle, email, nome);
+            var agenda = await _queries.InsertAgenda(agendaDTO, idUsuario, idGoogle, email, nome, foto);
 
             if (agenda != null)
             {

@@ -24,22 +24,22 @@ namespace AgendaAPI.Queries
         }
 
         #region Queries Agendas
-        public async Task<Agenda> InsertAgenda(CreateAgendaDTO agendaDTO, int idUsuario, int idGoogle, string email, string nome)
+        public async Task<Agenda> InsertAgenda(CreateAgendaDTO agendaDTO, int idUsuario, int idGoogle, string email, string nome, string foto)
         {
-            string _query = @"INSERT INTO AGENDAS (ID_USUARIO_FK, ID_GOOGLE_FK, EMAIL_FK, NOME_FK, TITULO, DESCRICAO, DT_FIM) VALUES (@ID_USUARIO, @ID_GOOGLE, @EMAIL, @NOME, @TITULO, @DESCRICAO, @DT_FIM);
+            string _query = @"INSERT INTO AGENDAS (ID_USUARIO_FK, ID_GOOGLE_FK, EMAIL_FK, NOME_FK, FOTO_FK, TITULO, DESCRICAO, DT_FIM) VALUES (@ID_USUARIO, @ID_GOOGLE, @EMAIL, @NOME, @FOTO, @TITULO, @DESCRICAO, @DT_FIM);
                              
-                            SELECT ID_AGENDA, ID_USUARIO_FK, ID_GOOGLE_FK, EMAIL_FK, NOME_FK, TITULO, DESCRICAO, DT_FIM FROM AGENDAS WHERE ID_AGENDA = LAST_INSERT_ID();";
+                            SELECT ID_AGENDA, ID_USUARIO_FK, ID_GOOGLE_FK, EMAIL_FK, NOME_FK, FOTO_FK, TITULO, DESCRICAO, DT_FIM FROM AGENDAS WHERE ID_AGENDA = LAST_INSERT_ID();";
 
             using (var con = new MySqlConnection(_connectionString))
             {
                 con.Open();
-                return await con.QueryFirstOrDefaultAsync<Agenda>(_query, new { ID_USUARIO = idUsuario, ID_GOOGLE = idGoogle, EMAIL = email, NOME = nome, TITULO = agendaDTO.Titulo, DESCRICAO = agendaDTO.Descricao, DT_FIM = agendaDTO.Dt_Fim });
+                return await con.QueryFirstOrDefaultAsync<Agenda>(_query, new { ID_USUARIO = idUsuario, ID_GOOGLE = idGoogle, EMAIL = email, NOME = nome, FOTO = foto, TITULO = agendaDTO.Titulo, DESCRICAO = agendaDTO.Descricao, DT_FIM = agendaDTO.Dt_Fim });
             }
         }
 
         public async Task<IEnumerable<Agenda>> GetAgendasByIdGoogle(int idGoogle)
         {
-            string _query = @"SELECT ID_AGENDA, ID_USUARIO_FK, ID_GOOGLE_FK, EMAIL_FK, NOME_FK, TITULO, DESCRICAO, DT_FIM FROM AGENDAS WHERE ID_GOOGLE_FK = @ID_GOOGLE_FK;";
+            string _query = @"SELECT ID_AGENDA, ID_USUARIO_FK, ID_GOOGLE_FK, EMAIL_FK, NOME_FK, FOTO_FK, TITULO, DESCRICAO, DT_FIM FROM AGENDAS WHERE ID_GOOGLE_FK = @ID_GOOGLE_FK;";
 
             using (var con = new MySqlConnection(_connectionString))
             {
