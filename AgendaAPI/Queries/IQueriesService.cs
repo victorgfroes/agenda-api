@@ -19,7 +19,7 @@ namespace AgendaAPI.Queries
         #endregion
 
         #region Queries Conexões
-        Task<Conexao> RequestConexao(CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email);        
+        Task<Conexao> RequestConexao(CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email, string foto);        
         Task<IEnumerable<Conexao>> GetSolicitacoesConexoesEmAbertoByIdGoogle(int idGoogleSolicitado);
         Task<int> AcceptConexao(int idConexao, int idGoogleSolicitante, int idGoogleSolicitado);
         Task<int> RefuseConexao(int idConexao, int idGoogleSolicitante, int idGoogleSolicitado);

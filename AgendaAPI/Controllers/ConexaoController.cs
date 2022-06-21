@@ -26,12 +26,12 @@ namespace AgendaAPI.Controllers
             };
         }
 
-        [HttpPost("SolicitaConexao/{idGoogleSolicitante}/{nomeSolicitante}/{email}")]
-        public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email)
+        [HttpPost("SolicitaConexao/{idGoogleSolicitante}/{nomeSolicitante}/{email}/{foto}")]
+        public async Task<ActionResult> SolicitaConexao([FromBody] CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email, string foto)
         {
             if (!_queries.GetOpenAndAcceptedConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK))
             {
-                var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, nomeSolicitante, email);
+                var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, nomeSolicitante, email, foto);
 
                 if (conexao != null)
                 {

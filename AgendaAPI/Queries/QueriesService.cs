@@ -105,22 +105,22 @@ namespace AgendaAPI.Queries
         #endregion
 
         #region Queries Conexões
-        public async Task<Conexao> RequestConexao(CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email)
+        public async Task<Conexao> RequestConexao(CreateConexaoDTO conexaoDTO, int idGoogleSolicitante, string nomeSolicitante, string email, string foto)
         {
-            string _query = @"INSERT INTO CONEXOES (ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK, ACEITO) VALUES (@ID_GOOGLE_SOLICITANTE, @NOME_SOLICITANTE, @EMAIL_SOLICITANTE, @ID_GOOGLE_SOLICITADO, @EMAIL_SOLICITADO, NULL);
+            string _query = @"INSERT INTO CONEXOES (ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, FOTO_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK, ACEITO) VALUES (@ID_GOOGLE_SOLICITANTE, @NOME_SOLICITANTE, @EMAIL_SOLICITANTE, @FOTO_SOLICITANTE, @ID_GOOGLE_SOLICITADO, @EMAIL_SOLICITADO, NULL);
 
-            SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK, ACEITO FROM CONEXOES WHERE ID_CONEXAO = LAST_INSERT_ID();";
+            SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, FOTO_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK, ACEITO FROM CONEXOES WHERE ID_CONEXAO = LAST_INSERT_ID();";
 
             using (var con = new MySqlConnection(_connectionString))
             {
                 con.Open();
-                return await con.QueryFirstOrDefaultAsync<Conexao>(_query, new { ID_GOOGLE_SOLICITANTE = idGoogleSolicitante, NOME_SOLICITANTE = nomeSolicitante, EMAIL_SOLICITANTE = email, ID_GOOGLE_SOLICITADO = conexaoDTO.Id_Google_Solicitado_FK, EMAIL_SOLICITADO = conexaoDTO.Email_Solicitado_FK });
+                return await con.QueryFirstOrDefaultAsync<Conexao>(_query, new { ID_GOOGLE_SOLICITANTE = idGoogleSolicitante, NOME_SOLICITANTE = nomeSolicitante, EMAIL_SOLICITANTE = email, FOTO_SOLICITANTE = foto, ID_GOOGLE_SOLICITADO = conexaoDTO.Id_Google_Solicitado_FK, EMAIL_SOLICITADO = conexaoDTO.Email_Solicitado_FK });
             }
         }
 
         public async Task<IEnumerable<Conexao>> GetSolicitacoesConexoesEmAbertoByIdGoogle(int idGoogleSolicitado)
         {
-            string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO IS NULL;";
+            string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, FOTO_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO IS NULL;";
 
             using (var con = new MySqlConnection(_connectionString))
             {
@@ -153,7 +153,7 @@ namespace AgendaAPI.Queries
 
         public async Task<IEnumerable<Conexao>> GetConexoesByIdGoogle(int idGoogleSolicitante)
         {
-            string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ACEITO = TRUE;";
+            string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, FOTO_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ACEITO = TRUE;";
 
             using (var con = new MySqlConnection(_connectionString))
             {

@@ -16,6 +16,9 @@ namespace AgendaAPI.Models
         [StringLength(100)]
         public string Email_Solicitante_FK { get; set; }
         [Required]
+        [StringLength(500)]
+        public string Foto_Solicitante_FK { get; set; }
+        [Required]
         public int Id_Google_Solicitado_FK { get; set; }
         [Required]
         [StringLength(100)]
