@@ -153,7 +153,7 @@ namespace AgendaAPI.Queries
 
         public async Task<IEnumerable<Conexao>> GetConexoesByIdGoogle(int idGoogleSolicitante)
         {
-            string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, FOTO_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ACEITO = TRUE;";
+            string _query = @"SELECT ID_CONEXAO, ID_GOOGLE_SOLICITANTE_FK, NOME_SOLICITANTE_FK, EMAIL_SOLICITANTE_FK, FOTO_SOLICITANTE_FK, ID_GOOGLE_SOLICITADO_FK, EMAIL_SOLICITADO_FK, ACEITO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ACEITO = TRUE;";
 
             using (var con = new MySqlConnection(_connectionString))
             {
@@ -173,9 +173,20 @@ namespace AgendaAPI.Queries
             }
         }
 
-        public bool GetOpenAndAcceptedConexao(int idGoogleSolicitante, int idGoogleSolicitado)
+        public bool GetOpenConexao(int idGoogleSolicitante, int idGoogleSolicitado)
         {
-            string _query = @"SELECT ID_CONEXAO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO IS NULL OR ACEITO = TRUE";
+            string _query = @"SELECT ID_CONEXAO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO = NULL";
+
+            using (var con = new MySqlConnection(_connectionString))
+            {
+                con.Open();
+                return con.ExecuteScalar<bool>(_query, new { ID_GOOGLE_SOLICITANTE = idGoogleSolicitante, ID_GOOGLE_SOLICITADO = idGoogleSolicitado });
+            }
+        }
+
+        public bool GetAcceptedConexao(int idGoogleSolicitante, int idGoogleSolicitado)
+        {
+            string _query = @"SELECT ID_CONEXAO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO = TRUE";
 
             using (var con = new MySqlConnection(_connectionString))
             {

@@ -25,7 +25,8 @@ namespace AgendaAPI.Queries
         Task<int> RefuseConexao(int idConexao, int idGoogleSolicitante, int idGoogleSolicitado);
         Task<IEnumerable<Conexao>> GetConexoesByIdGoogle(int idGoogleSolicitante);
         Task<int> DeleteConexao(int idConexao, int idGoogleSolicitante, int idGoogleSolicitado);
-        bool GetOpenAndAcceptedConexao(int idGoogleSolicitante, int idGoogleSolicitado);
+        bool GetOpenConexao(int idGoogleSolicitante, int idGoogleSolicitado);
+        bool GetAcceptedConexao(int idGoogleSolicitante, int idGoogleSolicitado);
         #endregion
 
         #region Queries Usuários
