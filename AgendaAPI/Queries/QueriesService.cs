@@ -175,7 +175,7 @@ namespace AgendaAPI.Queries
 
         public bool GetOpenConexao(int idGoogleSolicitante, int idGoogleSolicitado)
         {
-            string _query = @"SELECT ID_CONEXAO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO = NULL";
+            string _query = @"SELECT ID_CONEXAO FROM CONEXOES WHERE ID_GOOGLE_SOLICITANTE_FK = @ID_GOOGLE_SOLICITANTE AND ID_GOOGLE_SOLICITADO_FK = @ID_GOOGLE_SOLICITADO AND ACEITO IS NULL";
 
             using (var con = new MySqlConnection(_connectionString))
             {

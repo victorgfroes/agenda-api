@@ -31,7 +31,7 @@ namespace AgendaAPI.Controllers
         {
             foto = _queries.PercentDecode(foto);
             
-            if (!_queries.GetOpenConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK) || !_queries.GetAcceptedConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK))
+            if (!_queries.GetOpenConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK) && !_queries.GetAcceptedConexao(idGoogleSolicitante, conexaoDTO.Id_Google_Solicitado_FK))
             {
                 var conexao = await _queries.RequestConexao(conexaoDTO, idGoogleSolicitante, nomeSolicitante, email, foto);
 
